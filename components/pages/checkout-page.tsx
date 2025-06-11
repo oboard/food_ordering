@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/language-context';
 import { useCart } from '@/contexts/cart-context';
 import { useAuth } from '@/contexts/auth-context';
@@ -25,6 +25,31 @@ export function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (!user) return;
+
+      try {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('address, phone')
+          .eq('id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          setDeliveryAddress(data.address || '');
+          setPhone(data.phone || '');
+        }
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
+    };
+
+    fetchUserProfile();
+  }, [user]);
 
   const totalPrice = getTotalPrice();
 
@@ -184,6 +209,35 @@ export function CheckoutPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                if (!user) return;
+                try {
+                  const { data, error } = await supabase
+                    .from('profiles')
+                    .select('address, phone')
+                    .eq('id', user.id)
+                    .single();
+
+                  if (error) throw error;
+
+                  if (data) {
+                    setDeliveryAddress(data.address || '');
+                    setPhone(data.phone || '');
+                    toast.success(t('checkout.profileImported'));
+                  }
+                } catch (error) {
+                  console.error('Error importing profile:', error);
+                  toast.error(t('common.error'));
+                }
+              }}
+            >
+              {t('checkout.importFromProfile')}
+            </Button>
+          </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               {t('checkout.deliveryAddress')} *
