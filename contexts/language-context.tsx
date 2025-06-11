@@ -115,6 +115,7 @@ const translations = {
     'payment.paymentFailed': 'Payment Failed',
     'payment.wechatQR': 'WeChat Payment QR',
     'payment.scanWeChat': 'Scan with WeChat to pay',
+    'payment.scanWeChatDescription': 'Open WeChat and scan the QR code to complete payment',
     'payment.securePayment': 'Secure mobile payment',
     
     // Checkout
@@ -131,6 +132,8 @@ const translations = {
     'checkout.placeOrder': 'Place Order',
     'checkout.fillDeliveryInfo': 'Please fill in delivery address and phone',
     'checkout.orderCreated': 'Order created successfully',
+    'checkout.importFromProfile': 'Import from Profile',
+    'checkout.profileImported': 'Information imported from profile',
     
     // Profile
     'profile.title': 'Profile',
@@ -271,6 +274,7 @@ const translations = {
     'payment.paymentFailed': '支付失败',
     'payment.wechatQR': '微信收款码',
     'payment.scanWeChat': '请使用微信扫码支付',
+    'payment.scanWeChatDescription': '打开微信，扫描二维码完成支付',
     'payment.securePayment': '安全便捷的移动支付',
     
     // Checkout
@@ -287,6 +291,8 @@ const translations = {
     'checkout.placeOrder': '提交订单',
     'checkout.fillDeliveryInfo': '请填写配送地址和电话',
     'checkout.orderCreated': '订单创建成功',
+    'checkout.importFromProfile': '从个人资料导入',
+    'checkout.profileImported': '已从个人资料导入信息',
     
     // Profile
     'profile.title': '个人中心',

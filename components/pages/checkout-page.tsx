@@ -25,6 +25,7 @@ export function CheckoutPage() {
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [phone, setPhone] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
+  const [currentOrder, setCurrentOrder] = useState<{ id: string; total_amount: number } | null>(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -113,6 +114,7 @@ export function CheckoutPage() {
 
       // Clear cart and show payment
       await clearCart();
+      setCurrentOrder(order);
       setShowPayment(true);
       
       toast.success(t('checkout.orderCreated'));
@@ -165,7 +167,7 @@ export function CheckoutPage() {
                 </p>
                 <div className="mt-2 p-2 bg-green-100 rounded">
                   <p className="text-lg font-bold text-green-800">
-                    ¥{totalPrice.toFixed(2)}
+                    ¥{currentOrder?.total_amount.toFixed(2) || '0.00'}
                   </p>
                 </div>
               </div>
@@ -216,13 +218,38 @@ export function CheckoutPage() {
               onClick={async () => {
                 if (!user) return;
                 try {
-                  const { data, error } = await supabase
+                  // 先尝试获取个人资料
+                  let { data, error } = await supabase
                     .from('profiles')
                     .select('address, phone')
                     .eq('id', user.id)
                     .single();
 
-                  if (error) throw error;
+                  // 如果个人资料不存在，创建一个空的个人资料
+                  if (error?.code === 'PGRST116') {
+                    const { error: insertError } = await supabase
+                      .from('profiles')
+                      .insert({
+                        id: user.id,
+                        address: null,
+                        phone: null,
+                        preferred_language: language,
+                      });
+
+                    if (insertError) throw insertError;
+
+                    // 重新获取新创建的个人资料
+                    const { data: newData, error: newError } = await supabase
+                      .from('profiles')
+                      .select('address, phone')
+                      .eq('id', user.id)
+                      .single();
+
+                    if (newError) throw newError;
+                    data = newData;
+                  } else if (error) {
+                    throw error;
+                  }
 
                   if (data) {
                     setDeliveryAddress(data.address || '');
