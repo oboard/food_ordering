@@ -221,7 +221,7 @@ export function HomePage() {
           onClick={() => router.push('/menu')}
           className="w-full h-12 bg-orange-600 hover:bg-orange-700 rounded-full"
         >
-          {language === 'zh' ? '查看完整菜单' : 'View Full Menu'}
+          {t('menu.viewFullMenu')}
         </Button>
       </div>
     </div>

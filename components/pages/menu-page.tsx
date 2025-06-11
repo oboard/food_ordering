@@ -128,7 +128,7 @@ export function MenuPage() {
             value="all" 
             className="text-xs px-2 py-2 data-[state=active]:bg-orange-600 data-[state=active]:text-white"
           >
-            {language === 'zh' ? '全部' : 'All'}
+            {t('menu.all')}
           </TabsTrigger>
           {categories.slice(0, 2).map((category) => (
             <TabsTrigger 
@@ -232,7 +232,7 @@ function MenuItemCard({
               </h3>
               {item.is_featured && (
                 <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800 text-xs">
-                  {language === 'zh' ? '推荐' : 'Featured'}
+                  {t('menu.featured')}
                 </Badge>
               )}
             </div>

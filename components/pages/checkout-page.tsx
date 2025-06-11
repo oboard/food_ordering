@@ -42,7 +42,7 @@ export function CheckoutPage() {
     }
 
     if (!deliveryAddress.trim() || !phone.trim()) {
-      toast.error(language === 'zh' ? '请填写配送地址和电话' : 'Please fill in delivery address and phone');
+      toast.error(t('checkout.fillDeliveryInfo'));
       return;
     }
 
@@ -90,7 +90,7 @@ export function CheckoutPage() {
       await clearCart();
       setShowPayment(true);
       
-      toast.success(language === 'zh' ? '订单创建成功' : 'Order created successfully');
+      toast.success(t('checkout.orderCreated'));
     } catch (error) {
       console.error('Error placing order:', error);
       toast.error(t('common.error'));
@@ -136,7 +136,7 @@ export function CheckoutPage() {
               <div className="text-center">
                 <QrCode className="h-32 w-32 mx-auto mb-4 text-gray-400" />
                 <p className="text-sm text-gray-500">
-                  {language === 'zh' ? '微信收款码' : 'WeChat Payment QR'}
+                  {t('payment.wechatQR')}
                 </p>
                 <div className="mt-2 p-2 bg-green-100 rounded">
                   <p className="text-lg font-bold text-green-800">
@@ -150,14 +150,11 @@ export function CheckoutPage() {
               <div className="flex items-center justify-center gap-2 text-green-600">
                 <Smartphone className="h-5 w-5" />
                 <span className="text-sm">
-                  {language === 'zh' ? '请使用微信扫码支付' : 'Scan with WeChat to pay'}
+                  {t('payment.scanWeChat')}
                 </span>
               </div>
               <p className="text-xs text-gray-500">
-                {language === 'zh' 
-                  ? '扫码后请在微信中完成支付' 
-                  : 'Complete payment in WeChat after scanning'
-                }
+                {t('payment.scanWeChatDescription')}
               </p>
             </div>
 
@@ -183,16 +180,16 @@ export function CheckoutPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            {language === 'zh' ? '配送信息' : 'Delivery Information'}
+            {t('checkout.deliveryInfo')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {language === 'zh' ? '配送地址' : 'Delivery Address'} *
+              {t('checkout.deliveryAddress')} *
             </label>
             <Textarea
-              placeholder={language === 'zh' ? '请输入详细地址' : 'Enter detailed address'}
+              placeholder={t('checkout.addressPlaceholder')}
               value={deliveryAddress}
               onChange={(e) => setDeliveryAddress(e.target.value)}
               className="min-h-[80px]"
@@ -200,11 +197,11 @@ export function CheckoutPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              {language === 'zh' ? '联系电话' : 'Phone Number'} *
+              {t('checkout.phone')} *
             </label>
             <Input
               type="tel"
-              placeholder={language === 'zh' ? '请输入手机号码' : 'Enter phone number'}
+              placeholder={t('checkout.phonePlaceholder')}
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
             />
@@ -227,7 +224,7 @@ export function CheckoutPage() {
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">
-            {language === 'zh' ? '订单详情' : 'Order Details'}
+            {t('checkout.orderDetails')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -261,7 +258,7 @@ export function CheckoutPage() {
             <div>
               <span className="font-medium text-green-800">{t('payment.wechat')}</span>
               <p className="text-sm text-green-600">
-                {language === 'zh' ? '安全便捷的移动支付' : 'Secure mobile payment'}
+                {t('payment.securePayment')}
               </p>
             </div>
           </div>
@@ -274,16 +271,16 @@ export function CheckoutPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">
-                {language === 'zh' ? '小计' : 'Subtotal'}
+                {t('checkout.subtotal')}
               </span>
               <span>¥{totalPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">
-                {language === 'zh' ? '配送费' : 'Delivery Fee'}
+                {t('checkout.deliveryFee')}
               </span>
               <span className="text-green-600">
-                {language === 'zh' ? '免费' : 'Free'}
+                {t('checkout.free')}
               </span>
             </div>
             <Separator />
@@ -303,8 +300,8 @@ export function CheckoutPage() {
           className="w-full h-12 bg-orange-600 hover:bg-orange-700 rounded-full text-lg font-semibold"
         >
           {loading 
-            ? (language === 'zh' ? '提交中...' : 'Placing Order...') 
-            : (language === 'zh' ? '提交订单' : 'Place Order')
+            ? t('checkout.placingOrder')
+            : t('checkout.placeOrder')
           }
         </Button>
       </div>

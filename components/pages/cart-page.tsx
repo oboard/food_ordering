@@ -47,10 +47,10 @@ export function CartPage() {
       <div className="p-4 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <ShoppingBag className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">
-          {language === 'zh' ? '请先登录' : 'Please Login First'}
+          {t('cart.loginRequired')}
         </h2>
         <p className="text-gray-500 mb-4">
-          {language === 'zh' ? '登录后即可查看购物车' : 'Login to view your cart'}
+          {t('cart.loginToView')}
         </p>
         <Button onClick={() => router.push('/auth')} className="bg-orange-600 hover:bg-orange-700">
           {t('auth.login')}
@@ -77,7 +77,7 @@ export function CartPage() {
           {t('cart.empty')}
         </h2>
         <p className="text-gray-500 mb-4">
-          {language === 'zh' ? '去菜单看看有什么好吃的吧！' : 'Browse our menu to add some delicious items!'}
+          {t('cart.browseMenu')}
         </p>
         <Button onClick={() => router.push('/menu')} className="bg-orange-600 hover:bg-orange-700">
           {t('nav.menu')}
@@ -183,16 +183,16 @@ export function CartPage() {
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">
-                {language === 'zh' ? '小计' : 'Subtotal'}
+                {t('cart.subtotal')}
               </span>
               <span>¥{totalPrice.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">
-                {language === 'zh' ? '配送费' : 'Delivery Fee'}
+                {t('cart.deliveryFee')}
               </span>
               <span className="text-green-600">
-                {language === 'zh' ? '免费' : 'Free'}
+                {t('cart.free')}
               </span>
             </div>
             <Separator />

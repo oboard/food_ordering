@@ -114,7 +114,7 @@ export function ProfilePage() {
 
   const handleSignOut = async () => {
     await signOut();
-    toast.success(language === 'zh' ? '已退出登录' : 'Signed out successfully');
+    toast.success(t('profile.logoutSuccess'));
     router.push('/');
   };
 
@@ -128,10 +128,10 @@ export function ProfilePage() {
       <div className="p-4 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <User className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">
-          {language === 'zh' ? '请先登录' : 'Please Login First'}
+          {t('profile.loginRequired')}
         </h2>
         <p className="text-gray-500 mb-4">
-          {language === 'zh' ? '登录后即可查看个人资料' : 'Login to view your profile'}
+          {t('profile.loginToView')}
         </p>
         <Button onClick={() => router.push('/auth')} className="bg-orange-600 hover:bg-orange-700">
           {t('auth.login')}
@@ -188,11 +188,11 @@ export function ProfilePage() {
                 id="fullName"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder={language === 'zh' ? '请输入姓名' : 'Enter your full name'}
+                placeholder={t('auth.fullNamePlaceholder')}
               />
             ) : (
               <p className="text-sm text-gray-700 py-2 px-3 bg-gray-50 rounded-md">
-                {fullName || (language === 'zh' ? '未设置' : 'Not set')}
+                {fullName || t('auth.notSet')}
               </p>
             )}
           </div>
@@ -213,12 +213,12 @@ export function ProfilePage() {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder={language === 'zh' ? '请输入手机号' : 'Enter your phone number'}
+                placeholder={t('auth.phonePlaceholder')}
               />
             ) : (
               <div className="flex items-center gap-2 text-sm text-gray-700 py-2 px-3 bg-gray-50 rounded-md">
                 <Phone className="h-4 w-4 text-gray-400" />
-                {phone || (language === 'zh' ? '未设置' : 'Not set')}
+                {phone || t('auth.notSet')}
               </div>
             )}
           </div>
@@ -230,13 +230,13 @@ export function ProfilePage() {
                 id="address"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
-                placeholder={language === 'zh' ? '请输入地址' : 'Enter your address'}
+                placeholder={t('auth.addressPlaceholder')}
                 className="min-h-[80px]"
               />
             ) : (
               <div className="flex items-start gap-2 text-sm text-gray-700 py-2 px-3 bg-gray-50 rounded-md">
                 <MapPin className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
-                <span>{address || (language === 'zh' ? '未设置' : 'Not set')}</span>
+                <span>{address || t('auth.notSet')}</span>
               </div>
             )}
           </div>
@@ -272,7 +272,7 @@ export function ProfilePage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            {language === 'zh' ? '设置' : 'Settings'}
+            {t('profile.settings')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -283,7 +283,7 @@ export function ProfilePage() {
             </div>
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-600">
-                {language === 'zh' ? '中文' : 'English'}
+                {t('nav.language')}
               </span>
               <Switch
                 checked={language === 'zh'}
@@ -323,7 +323,7 @@ export function ProfilePage() {
           className="w-full justify-start h-12 px-4"
         >
           <HelpCircle className="h-5 w-5 mr-3 text-gray-400" />
-          {language === 'zh' ? '帮助与支持' : 'Help & Support'}
+          {t('profile.helpSupport')}
         </Button>
 
         <Separator className="my-4" />

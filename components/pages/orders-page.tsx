@@ -125,10 +125,10 @@ export function OrdersPage() {
       <div className="p-4 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <ClipboardList className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">
-          {language === 'zh' ? '请先登录' : 'Please Login First'}
+          {t('orders.loginRequired')}
         </h2>
         <p className="text-gray-500 mb-4">
-          {language === 'zh' ? '登录后即可查看订单历史' : 'Login to view your order history'}
+          {t('orders.loginToView')}
         </p>
         <Button onClick={() => router.push('/auth')} className="bg-orange-600 hover:bg-orange-700">
           {t('auth.login')}
@@ -152,10 +152,10 @@ export function OrdersPage() {
       <div className="p-4 flex flex-col items-center justify-center min-h-[60vh] text-center">
         <ClipboardList className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">
-          {language === 'zh' ? '暂无订单' : 'No Orders Yet'}
+          {t('orders.noOrders')}
         </h2>
         <p className="text-gray-500 mb-4">
-          {language === 'zh' ? '快去点些美食吧！' : 'Start ordering some delicious food!'}
+          {t('orders.startOrdering')}
         </p>
         <Button onClick={() => router.push('/menu')} className="bg-orange-600 hover:bg-orange-700">
           {t('nav.menu')}
@@ -229,7 +229,7 @@ export function OrdersPage() {
               {/* Delivery Address */}
               {order.delivery_address && (
                 <p className="text-xs text-gray-500 mb-3">
-                  {language === 'zh' ? '配送至：' : 'Deliver to: '}{order.delivery_address}
+                  {t('orders.deliverTo')}{order.delivery_address}
                 </p>
               )}
 

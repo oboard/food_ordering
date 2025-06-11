@@ -61,7 +61,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
       <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="px-4 py-3 flex items-center justify-between">
           <h1 className="text-xl font-bold text-gray-900">
-            {language === 'zh' ? '美食订餐' : 'Food Ordering'}
+            {t('nav.appName')}
           </h1>
           <div className="flex items-center gap-2">
             <Button
@@ -72,7 +72,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
             >
               <Globe className="h-5 w-5" />
               <span className="ml-1 text-sm">
-                {language === 'zh' ? '中' : 'EN'}
+                {t('nav.language')}
               </span>
             </Button>
             {user && (

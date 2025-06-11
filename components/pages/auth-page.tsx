@@ -44,7 +44,7 @@ export function AuthPage() {
         return;
       }
 
-      toast.success(language === 'zh' ? '登录成功' : 'Login successful');
+      toast.success(t('auth.loginSuccess'));
       const returnUrl = searchParams.get('returnUrl') || '/';
       router.push(returnUrl);
     } catch (error) {
@@ -58,12 +58,12 @@ export function AuthPage() {
     e.preventDefault();
 
     if (registerPassword !== confirmPassword) {
-      toast.error(language === 'zh' ? '密码不匹配' : 'Passwords do not match');
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
 
     if (registerPassword.length < 6) {
-      toast.error(language === 'zh' ? '密码至少6位' : 'Password must be at least 6 characters');
+      toast.error(t('auth.passwordTooShort'));
       return;
     }
 
@@ -76,7 +76,7 @@ export function AuthPage() {
         return;
       }
 
-      toast.success(language === 'zh' ? '注册成功' : 'Registration successful');
+      toast.success(t('auth.registerSuccess'));
       const returnUrl = searchParams.get('returnUrl') || '/';
       router.push(returnUrl);
     } catch (error) {
@@ -90,10 +90,10 @@ export function AuthPage() {
     <div className="p-4 max-w-md mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          {language === 'zh' ? '欢迎回来' : 'Welcome Back'}
+          {t('auth.welcome')}
         </h1>
         <p className="text-gray-600">
-          {language === 'zh' ? '登录或注册开始订餐' : 'Login or register to start ordering'}
+          {t('auth.welcomeSubtitle')}
         </p>
       </div>
 
@@ -120,7 +120,7 @@ export function AuthPage() {
                       value={loginEmail}
                       onChange={(e) => setLoginEmail(e.target.value)}
                       className="pl-10"
-                      placeholder={language === 'zh' ? '请输入邮箱' : 'Enter your email'}
+                      placeholder={t('auth.emailPlaceholder')}
                       required
                     />
                   </div>
@@ -136,7 +136,7 @@ export function AuthPage() {
                       value={loginPassword}
                       onChange={(e) => setLoginPassword(e.target.value)}
                       className="pl-10 pr-10"
-                      placeholder={language === 'zh' ? '请输入密码' : 'Enter your password'}
+                      placeholder={t('auth.passwordPlaceholder')}
                       required
                     />
                     <Button
@@ -180,7 +180,7 @@ export function AuthPage() {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                       className="pl-10"
-                      placeholder={language === 'zh' ? '请输入姓名' : 'Enter your full name'}
+                      placeholder={t('auth.fullNamePlaceholder')}
                       required
                     />
                   </div>
@@ -196,7 +196,7 @@ export function AuthPage() {
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       className="pl-10"
-                      placeholder={language === 'zh' ? '请输入手机号' : 'Enter your phone number'}
+                      placeholder={t('auth.phonePlaceholder')}
                       required
                     />
                   </div>
@@ -212,7 +212,7 @@ export function AuthPage() {
                       value={registerEmail}
                       onChange={(e) => setRegisterEmail(e.target.value)}
                       className="pl-10"
-                      placeholder={language === 'zh' ? '请输入邮箱' : 'Enter your email'}
+                      placeholder={t('auth.emailPlaceholder')}
                       required
                     />
                   </div>
@@ -228,7 +228,7 @@ export function AuthPage() {
                       value={registerPassword}
                       onChange={(e) => setRegisterPassword(e.target.value)}
                       className="pl-10 pr-10"
-                      placeholder={language === 'zh' ? '请输入密码' : 'Enter your password'}
+                      placeholder={t('auth.passwordPlaceholder')}
                       required
                     />
                     <Button
@@ -253,7 +253,7 @@ export function AuthPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       className="pl-10 pr-10"
-                      placeholder={language === 'zh' ? '请确认密码' : 'Confirm your password'}
+                      placeholder={t('auth.confirmPasswordPlaceholder')}
                       required
                     />
                     <Button
