@@ -4,16 +4,16 @@
   "private": true,
   "type": "module",
   "description": "一个现代化的食品订购应用，支持多语言（中文/英文），提供流畅的用户体验和现代化的界面设计。",
-  "author": "Your Name <your.email@example.com>",
+  "author": "oboard <oboard@outlook.com>",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/food-ordering-app.git"
+    "url": "https://github.com/oboard/food_ordering.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/food-ordering-app/issues"
+    "url": "https://github.com/oboard/food_ordering/issues"
   },
-  "homepage": "https://github.com/yourusername/food-ordering-app#readme",
+  "homepage": "https://github.com/oboard/food_ordering#readme",
   "keywords": [
     "nextjs",
     "react",
