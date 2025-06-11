@@ -53,6 +53,9 @@ const translations = {
     'menu.featured': 'Featured Items',
     'menu.categories': 'Categories',
     'menu.searchPlaceholder': 'Search menu items...',
+    'menu.searching': 'Searching...',
+    'menu.searchResults': 'Search Results',
+    'menu.noResults': 'No items found',
     'menu.addToCart': 'Add to Cart',
     'menu.outOfStock': 'Out of Stock',
     'menu.calories': 'calories',
@@ -206,6 +209,9 @@ const translations = {
     'menu.featured': '推荐菜品',
     'menu.categories': '菜品分类',
     'menu.searchPlaceholder': '搜索菜品...',
+    'menu.searching': '搜索中...',
+    'menu.searchResults': '搜索结果',
+    'menu.noResults': '未找到相关菜品',
     'menu.addToCart': '加入购物车',
     'menu.outOfStock': '缺货',
     'menu.calories': '卡路里',
@@ -322,7 +328,7 @@ const translations = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguage] = useState<Language>('zh');
 
   useEffect(() => {
     const savedLanguage = localStorage.getItem('preferred-language') as Language;

@@ -26,10 +26,43 @@ export function HomePage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [searchResults, setSearchResults] = useState<MenuItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    const searchItems = async () => {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const { data, error } = await supabase
+          .from('menu_items')
+          .select('*')
+          .eq('is_available', true)
+          .or(`name_en.ilike.%${searchQuery}%,name_zh.ilike.%${searchQuery}%,description_en.ilike.%${searchQuery}%,description_zh.ilike.%${searchQuery}%`)
+          .order('sort_order');
+
+        if (error) throw error;
+        setSearchResults(data || []);
+      } catch (error) {
+        console.error('Error searching items:', error);
+        toast.error(t('common.error'));
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const debounceTimer = setTimeout(searchItems, 300);
+    return () => clearTimeout(debounceTimer);
+  }, [searchQuery, t]);
 
   const fetchData = async () => {
     try {
@@ -114,116 +147,200 @@ export function HomePage() {
         )}
       </div>
 
+      {/* Search Results */}
+      {searchQuery && (
+        <section>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {isSearching ? t('menu.searching') : t('menu.searchResults')}
+          </h2>
+          {isSearching ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <Skeleton key={i} className="h-32 w-full" />
+              ))}
+            </div>
+          ) : searchResults.length > 0 ? (
+            <div className="space-y-4">
+              {searchResults.map((item) => (
+                <Card
+                  key={item.id}
+                  className="hover:shadow-lg transition-shadow duration-200"
+                >
+                  <CardContent className="p-4">
+                    <div className="flex gap-4">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
+                        {item.image_url && (
+                          <img
+                            src={item.image_url}
+                            alt={getItemName(item)}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-medium text-gray-900 text-sm leading-tight">
+                            {getItemName(item)}
+                          </h3>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                          {getItemDescription(item)}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                          {item.preparation_time && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{item.preparation_time}{t('menu.minutes')}</span>
+                            </div>
+                          )}
+                          {item.calories && (
+                            <div className="flex items-center gap-1">
+                              <Flame className="h-3 w-3" />
+                              <span>{item.calories} {t('menu.calories')}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-orange-600">
+                            ¥{item.price.toFixed(2)}
+                          </span>
+                          <Button
+                            size="sm"
+                            onClick={() => handleAddToCart(item)}
+                            className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
+                          >
+                            <Plus className="h-3 w-3 mr-1" />
+                            {t('menu.addToCart')}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-500">
+              {t('menu.noResults')}
+            </div>
+          )}
+        </section>
+      )}
+
       {/* Categories */}
-      <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          {t('menu.categories')}
-        </h2>
-        <div className="grid grid-cols-2 gap-3">
-          {categories.map((category) => (
-            <Card
-              key={category.id}
-              className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
-              onClick={() => router.push(`/menu?category=${category.id}`)}
-            >
-              <CardContent className="p-4">
-                <div className="aspect-square rounded-lg overflow-hidden mb-3 bg-gradient-to-br from-orange-100 to-orange-50">
-                  {category.image_url && (
-                    <img
-                      src={category.image_url}
-                      alt={getCategoryName(category)}
-                      className="w-full h-full object-cover"
-                    />
-                  )}
-                </div>
-                <h3 className="font-medium text-gray-900 text-center">
-                  {getCategoryName(category)}
-                </h3>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Featured Items */}
-      <section>
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">
-          {t('menu.featured')}
-        </h2>
-        <div className="space-y-4">
-          {featuredItems.map((item) => (
-            <Card
-              key={item.id}
-              className="hover:shadow-lg transition-shadow duration-200"
-            >
-              <CardContent className="p-4">
-                <div className="flex gap-4">
-                  <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
-                    {item.image_url && (
-                      <img
-                        src={item.image_url}
-                        alt={getItemName(item)}
-                        className="w-full h-full object-cover"
-                      />
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="font-medium text-gray-900 text-sm leading-tight">
-                        {getItemName(item)}
-                      </h3>
-                      <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                        <Star className="h-3 w-3 mr-1" />
-                        {t('menu.featured')}
-                      </Badge>
-                    </div>
-                    <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                      {getItemDescription(item)}
-                    </p>
-                    <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-                      {item.preparation_time && (
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          <span>{item.preparation_time}{t('menu.minutes')}</span>
-                        </div>
-                      )}
-                      {item.calories && (
-                        <div className="flex items-center gap-1">
-                          <Flame className="h-3 w-3" />
-                          <span>{item.calories} {t('menu.calories')}</span>
-                        </div>
+      {!searchQuery && (
+        <>
+          <section>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              {t('menu.categories')}
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {categories.map((category) => (
+                <Card
+                  key={category.id}
+                  className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
+                  onClick={() => router.push(`/menu?category=${category.id}`)}
+                >
+                  <CardContent className="p-4">
+                    <div className="aspect-square rounded-lg overflow-hidden mb-3 bg-gradient-to-br from-orange-100 to-orange-50">
+                      {category.image_url && (
+                        <img
+                          src={category.image_url}
+                          alt={getCategoryName(category)}
+                          className="w-full h-full object-cover"
+                        />
                       )}
                     </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-lg font-bold text-orange-600">
-                        ¥{item.price.toFixed(2)}
-                      </span>
-                      <Button
-                        size="sm"
-                        onClick={() => handleAddToCart(item)}
-                        className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
-                      >
-                        <Plus className="h-3 w-3 mr-1" />
-                        {t('menu.addToCart')}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
+                    <h3 className="font-medium text-gray-900 text-center">
+                      {getCategoryName(category)}
+                    </h3>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
 
-      {/* View All Menu Button */}
-      <div className="pt-4">
-        <Button
-          onClick={() => router.push('/menu')}
-          className="w-full h-12 bg-orange-600 hover:bg-orange-700 rounded-full"
-        >
-          {t('menu.viewFullMenu')}
-        </Button>
-      </div>
+          {/* Featured Items */}
+          <section>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              {t('menu.featured')}
+            </h2>
+            <div className="space-y-4">
+              {featuredItems.map((item) => (
+                <Card
+                  key={item.id}
+                  className="hover:shadow-lg transition-shadow duration-200"
+                >
+                  <CardContent className="p-4">
+                    <div className="flex gap-4">
+                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
+                        {item.image_url && (
+                          <img
+                            src={item.image_url}
+                            alt={getItemName(item)}
+                            className="w-full h-full object-cover"
+                          />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-medium text-gray-900 text-sm leading-tight">
+                            {getItemName(item)}
+                          </h3>
+                          <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
+                            <Star className="h-3 w-3 mr-1" />
+                            {t('menu.featured')}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                          {getItemDescription(item)}
+                        </p>
+                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
+                          {item.preparation_time && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              <span>{item.preparation_time}{t('menu.minutes')}</span>
+                            </div>
+                          )}
+                          {item.calories && (
+                            <div className="flex items-center gap-1">
+                              <Flame className="h-3 w-3" />
+                              <span>{item.calories} {t('menu.calories')}</span>
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-lg font-bold text-orange-600">
+                            ¥{item.price.toFixed(2)}
+                          </span>
+                          <Button
+                            size="sm"
+                            onClick={() => handleAddToCart(item)}
+                            className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
+                          >
+                            <Plus className="h-3 w-3 mr-1" />
+                            {t('menu.addToCart')}
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+
+          {/* View All Menu Button */}
+          <div className="pt-4">
+            <Button
+              onClick={() => router.push('/menu')}
+              className="w-full h-12 bg-orange-600 hover:bg-orange-700 rounded-full"
+            >
+              {t('menu.viewFullMenu')}
+            </Button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
