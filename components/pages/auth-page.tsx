@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { useLanguage } from '@/contexts/language-context';
 import { useAuth } from '@/contexts/auth-context';
 import { Button } from '@/components/ui/button';
@@ -12,8 +12,8 @@ import { Eye, EyeOff, Mail, Lock, User, Phone } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 
-export function AuthPage() {
-  const { language, t } = useLanguage();
+function AuthContent() {
+  const { t } = useLanguage();
   const { signIn, signUp } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -281,5 +281,24 @@ export function AuthPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="p-4 max-w-md mx-auto">
+        <div className="text-center mb-8">
+          <div className="h-8 w-48 bg-gray-200 rounded animate-pulse mx-auto mb-2" />
+          <div className="h-4 w-64 bg-gray-200 rounded animate-pulse mx-auto" />
+        </div>
+        <div className="space-y-4">
+          <div className="h-10 bg-gray-200 rounded animate-pulse" />
+          <div className="h-96 bg-gray-200 rounded animate-pulse" />
+        </div>
+      </div>
+    }>
+      <AuthContent />
+    </Suspense>
   );
 }

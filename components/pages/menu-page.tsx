@@ -1,24 +1,22 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useLanguage } from '@/contexts/language-context';
 import { useCart } from '@/contexts/cart-context';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Search, Clock, Flame, Plus, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Database } from '@/lib/supabase';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
+import { MenuItemCard } from '@/components/menu-item-card';
 
 type MenuItem = Database['public']['Tables']['menu_items']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
 
-export function MenuPage() {
+function MenuContent() {
   const { language, t } = useLanguage();
   const { addToCart } = useCart();
   const searchParams = useSearchParams();
@@ -64,21 +62,24 @@ export function MenuPage() {
     }
   };
 
-  const handleAddToCart = async (menuItem: MenuItem) => {
+  const handleAddToCart = async (id: string) => {
     try {
-      await addToCart(menuItem.id);
-      toast.success(
-        language === 'zh' 
-          ? `${menuItem.name_zh} 已添加到购物车` 
-          : `${menuItem.name_en} added to cart`
-      );
+      await addToCart(id);
+      const item = items.find(item => item.id === id);
+      if (item) {
+        toast.success(
+          language === 'zh' 
+            ? `${item.name_zh} 已添加到购物车` 
+            : `${item.name_en} added to cart`
+        );
+      }
     } catch (error) {
       toast.error(t('common.error'));
     }
   };
 
   const getItemName = (item: MenuItem) => language === 'zh' ? item.name_zh : item.name_en;
-  const getItemDescription = (item: MenuItem) => language === 'zh' ? item.description_zh : item.description_en;
+  const getItemDescription = (item: MenuItem) => language === 'zh' ? (item.description_zh || '') : (item.description_en || '');
   const getCategoryName = (category: Category) => language === 'zh' ? category.name_zh : category.name_en;
 
   const filteredItems = items.filter(item => {
@@ -95,6 +96,18 @@ export function MenuPage() {
     acc[category.id] = filteredItems.filter(item => item.category_id === category.id);
     return acc;
   }, {} as Record<string, MenuItem[]>);
+
+  const renderMenuItemCard = (item: MenuItem) => (
+    <MenuItemCard 
+      key={item.id} 
+      item={item} 
+      onAddToCart={handleAddToCart}
+      getItemName={getItemName}
+      getItemDescription={getItemDescription}
+      language={language}
+      t={t}
+    />
+  );
 
   if (loading) {
     return (
@@ -154,17 +167,7 @@ export function MenuPage() {
                     {getCategoryName(category)}
                   </h3>
                   <div className="space-y-3">
-                    {categoryItems.map((item) => (
-                      <MenuItemCard 
-                        key={item.id} 
-                        item={item} 
-                        onAddToCart={handleAddToCart}
-                        getItemName={getItemName}
-                        getItemDescription={getItemDescription}
-                        language={language}
-                        t={t}
-                      />
-                    ))}
+                    {categoryItems.map(renderMenuItemCard)}
                   </div>
                 </section>
               );
@@ -176,17 +179,7 @@ export function MenuPage() {
         {categories.map((category) => (
           <TabsContent key={category.id} value={category.id} className="mt-4">
             <div className="space-y-3">
-              {(groupedItems[category.id] || []).map((item) => (
-                <MenuItemCard 
-                  key={item.id} 
-                  item={item} 
-                  onAddToCart={handleAddToCart}
-                  getItemName={getItemName}
-                  getItemDescription={getItemDescription}
-                  language={language}
-                  t={t}
-                />
-              ))}
+              {(groupedItems[category.id] || []).map(renderMenuItemCard)}
             </div>
           </TabsContent>
         ))}
@@ -195,80 +188,18 @@ export function MenuPage() {
   );
 }
 
-interface MenuItemCardProps {
-  item: MenuItem;
-  onAddToCart: (item: MenuItem) => void;
-  getItemName: (item: MenuItem) => string;
-  getItemDescription: (item: MenuItem) => string | null;
-  language: string;
-  t: (key: string) => string;
-}
-
-function MenuItemCard({ 
-  item, 
-  onAddToCart, 
-  getItemName, 
-  getItemDescription, 
-  language, 
-  t 
-}: MenuItemCardProps) {
+export function MenuPage() {
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
-      <CardContent className="p-4">
-        <div className="flex gap-4">
-          <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
-            {item.image_url && (
-              <img
-                src={item.image_url}
-                alt={getItemName(item)}
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="font-medium text-gray-900 text-sm leading-tight">
-                {getItemName(item)}
-              </h3>
-              {item.is_featured && (
-                <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800 text-xs">
-                  {t('menu.featured')}
-                </Badge>
-              )}
-            </div>
-            <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-              {getItemDescription(item)}
-            </p>
-            <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-              {item.preparation_time && (
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{item.preparation_time}{t('menu.minutes')}</span>
-                </div>
-              )}
-              {item.calories && (
-                <div className="flex items-center gap-1">
-                  <Flame className="h-3 w-3" />
-                  <span>{item.calories} {t('menu.calories')}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-lg font-bold text-orange-600">
-                ¥{item.price.toFixed(2)}
-              </span>
-              <Button
-                size="sm"
-                onClick={() => onAddToCart(item)}
-                className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
-              >
-                <Plus className="h-3 w-3 mr-1" />
-                {t('menu.addToCart')}
-              </Button>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+    <Suspense fallback={
+      <div className="p-4 space-y-4">
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        {[...Array(5)].map((_, i) => (
+          <Skeleton key={i} className="h-32 w-full" />
+        ))}
+      </div>
+    }>
+      <MenuContent />
+    </Suspense>
   );
 }

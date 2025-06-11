@@ -6,14 +6,13 @@ import { useCart } from '@/contexts/cart-context';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Search, Star, Clock, Flame, Plus } from 'lucide-react';
-import Image from 'next/image';
+import { Search } from 'lucide-react';
 import { Database } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { MenuItemCard } from '@/components/menu-item-card';
 
 type MenuItem = Database['public']['Tables']['menu_items']['Row'];
 type Category = Database['public']['Tables']['categories']['Row'];
@@ -94,21 +93,24 @@ export function HomePage() {
     }
   };
 
-  const handleAddToCart = async (menuItem: MenuItem) => {
+  const handleAddToCart = async (id: string) => {
     try {
-      await addToCart(menuItem.id);
-      toast.success(
-        language === 'zh' 
-          ? `${menuItem.name_zh} 已添加到购物车` 
-          : `${menuItem.name_en} added to cart`
-      );
+      await addToCart(id);
+      const item = featuredItems.find(item => item.id === id) || searchResults.find(item => item.id === id);
+      if (item) {
+        toast.success(
+          language === 'zh' 
+            ? `${item.name_zh} 已添加到购物车` 
+            : `${item.name_en} added to cart`
+        );
+      }
     } catch (error) {
       toast.error(t('common.error'));
     }
   };
 
   const getItemName = (item: MenuItem) => language === 'zh' ? item.name_zh : item.name_en;
-  const getItemDescription = (item: MenuItem) => language === 'zh' ? item.description_zh : item.description_en;
+  const getItemDescription = (item: MenuItem) => language === 'zh' ? (item.description_zh || '') : (item.description_en || '');
   const getCategoryName = (category: Category) => language === 'zh' ? category.name_zh : category.name_en;
 
   if (loading) {
@@ -162,61 +164,16 @@ export function HomePage() {
           ) : searchResults.length > 0 ? (
             <div className="space-y-4">
               {searchResults.map((item) => (
-                <Card
-                  key={item.id}
-                  className="hover:shadow-lg transition-shadow duration-200"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex gap-4">
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
-                        {item.image_url && (
-                          <img
-                            src={item.image_url}
-                            alt={getItemName(item)}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-medium text-gray-900 text-sm leading-tight">
-                            {getItemName(item)}
-                          </h3>
-                        </div>
-                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                          {getItemDescription(item)}
-                        </p>
-                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-                          {item.preparation_time && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{item.preparation_time}{t('menu.minutes')}</span>
-                            </div>
-                          )}
-                          {item.calories && (
-                            <div className="flex items-center gap-1">
-                              <Flame className="h-3 w-3" />
-                              <span>{item.calories} {t('menu.calories')}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-orange-600">
-                            ¥{item.price.toFixed(2)}
-                          </span>
-                          <Button
-                            size="sm"
-                            onClick={() => handleAddToCart(item)}
-                            className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
-                          >
-                            <Plus className="h-3 w-3 mr-1" />
-                            {t('menu.addToCart')}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <MenuItemCard 
+                  key={item.id} 
+                  item={item} 
+                  onAddToCart={handleAddToCart}
+                  getItemName={getItemName}
+                  getItemDescription={getItemDescription}
+                  language={language}
+                  t={t}
+                  showFeatured={false}
+                />
               ))}
             </div>
           ) : (
@@ -267,65 +224,15 @@ export function HomePage() {
             </h2>
             <div className="space-y-4">
               {featuredItems.map((item) => (
-                <Card
-                  key={item.id}
-                  className="hover:shadow-lg transition-shadow duration-200"
-                >
-                  <CardContent className="p-4">
-                    <div className="flex gap-4">
-                      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-gradient-to-br from-gray-100 to-gray-50">
-                        {item.image_url && (
-                          <img
-                            src={item.image_url}
-                            alt={getItemName(item)}
-                            className="w-full h-full object-cover"
-                          />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between mb-2">
-                          <h3 className="font-medium text-gray-900 text-sm leading-tight">
-                            {getItemName(item)}
-                          </h3>
-                          <Badge variant="secondary" className="ml-2 bg-orange-100 text-orange-800">
-                            <Star className="h-3 w-3 mr-1" />
-                            {t('menu.featured')}
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-gray-600 mb-2 line-clamp-2">
-                          {getItemDescription(item)}
-                        </p>
-                        <div className="flex items-center gap-3 text-xs text-gray-500 mb-3">
-                          {item.preparation_time && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              <span>{item.preparation_time}{t('menu.minutes')}</span>
-                            </div>
-                          )}
-                          {item.calories && (
-                            <div className="flex items-center gap-1">
-                              <Flame className="h-3 w-3" />
-                              <span>{item.calories} {t('menu.calories')}</span>
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-lg font-bold text-orange-600">
-                            ¥{item.price.toFixed(2)}
-                          </span>
-                          <Button
-                            size="sm"
-                            onClick={() => handleAddToCart(item)}
-                            className="bg-orange-600 hover:bg-orange-700 h-8 px-3"
-                          >
-                            <Plus className="h-3 w-3 mr-1" />
-                            {t('menu.addToCart')}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <MenuItemCard 
+                  key={item.id} 
+                  item={item} 
+                  onAddToCart={handleAddToCart}
+                  getItemName={getItemName}
+                  getItemDescription={getItemDescription}
+                  language={language}
+                  t={t}
+                />
               ))}
             </div>
           </section>
