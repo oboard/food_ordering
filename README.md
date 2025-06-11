@@ -1,10 +1,10 @@
 # Food Ordering App 🍽️
 
-一个现代化的食品订购应用，使用 Next.js 13 和 Supabase 构建。支持多语言（中文/英文），提供流畅的用户体验和现代化的界面设计。
+一个现代化的食品订购应用，使用 Next.js 15 和 Supabase 构建。支持多语言（中文/英文），提供流畅的用户体验和现代化的界面设计。
 
 ## ✨ 特性
 
-- 🚀 基于 Next.js 13 App Router 的现代化 Web 应用
+- 🚀 基于 Next.js 15 App Router 的现代化 Web 应用
 - 🌐 支持中英文双语切换
 - 🎨 使用 Radix UI 和 Tailwind CSS 构建的精美界面
 - 🌙 支持深色/浅色主题
@@ -21,7 +21,7 @@
 
 ## 🛠️ 技术栈
 
-- [Next.js 13](https://nextjs.org/) - React 框架
+- [Next.js 15](https://nextjs.org/) - React 框架
 - [React 18](https://reactjs.org/) - UI 库
 - [TypeScript](https://www.typescriptlang.org/) - 类型安全
 - [Supabase](https://supabase.io/) - 后端服务
@@ -91,7 +91,7 @@ pnpm start
 
 ```
 food-ordering-app/
-├── app/                 # Next.js 13 App Router 页面
+├── app/                 # Next.js App Router 页面
 ├── components/         # React 组件
 │   ├── ui/            # UI 组件
 │   └── pages/         # 页面组件
