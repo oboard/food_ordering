@@ -3,11 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "description": "一个现代化的食品订购应用，支持多语言（中文/英文），提供流畅的用户体验和现代化的界面设计。",
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/food-ordering-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/food-ordering-app/issues"
+  },
+  "homepage": "https://github.com/yourusername/food-ordering-app#readme",
+  "keywords": [
+    "nextjs",
+    "react",
+    "typescript",
+    "supabase",
+    "tailwindcss",
+    "pwa",
+    "food-ordering",
+    "e-commerce"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -76,5 +99,26 @@
     "utf-8-validate": "^6.0.5",
     "vaul": "^0.9.9",
     "zod": "^3.25.60"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.0",
+    "lint-staged": "^15.0.0",
+    "prettier": "^3.0.0"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md}": [
+      "prettier --write"
+    ]
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
