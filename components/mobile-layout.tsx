@@ -64,17 +64,6 @@ export function MobileLayout({ children }: MobileLayoutProps) {
             {t('nav.appName')}
           </h1>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={toggleLanguage}
-              className="p-2"
-            >
-              <Globe className="h-5 w-5" />
-              <span className="ml-1 text-sm">
-                {t('nav.language')}
-              </span>
-            </Button>
             {user && (
               <Button
                 variant="ghost"
@@ -115,12 +104,12 @@ export function MobileLayout({ children }: MobileLayoutProps) {
                 <div className="relative">
                   <Icon className="h-5 w-5 mb-1" />
                   {item.badge && item.badge > 0 && (
-                    <Badge 
-                      variant="destructive" 
-                      className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center text-xs p-0 min-w-[20px]"
-                    >
-                      {item.badge > 99 ? '99+' : item.badge}
-                    </Badge>
+                    <div className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-red-500 rounded-full animate-pulse"></div>
+                      <span className="relative text-[10px] font-bold text-white">
+                        {item.badge > 99 ? '99+' : item.badge}
+                      </span>
+                    </div>
                   )}
                 </div>
                 <span className="text-xs font-medium">{item.name}</span>
