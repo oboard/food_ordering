@@ -243,7 +243,7 @@ export function OrdersPage() {
                 >
                   {t('orders.viewDetails')}
                 </Button>
-                {order.status !== 'cancelled' && order.status !== 'delivered' && (
+                {/* {order.status !== 'cancelled' && order.status !== 'delivered' && (
                   <Button
                     variant="outline"
                     size="sm"
@@ -251,7 +251,7 @@ export function OrdersPage() {
                   >
                     {t('orders.trackOrder')}
                   </Button>
-                )}
+                )} */}
                 {order.status === 'delivered' && (
                   <Button
                     variant="outline"

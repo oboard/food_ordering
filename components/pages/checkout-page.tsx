@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { QrCode, Smartphone, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 export function CheckoutPage() {
   const { language, t } = useLanguage();
@@ -161,7 +162,8 @@ export function CheckoutPage() {
             {/* WeChat QR Code */}
             <div className="w-64 h-64 bg-white border-2 border-gray-200 rounded-lg flex items-center justify-center">
               <div className="text-center">
-                <QrCode className="h-32 w-32 mx-auto mb-4 text-gray-400" />
+                {/* <QrCode className="h-32 w-32 mx-auto mb-4 text-gray-400" /> */}
+                <Image src="/pay.jpg" alt="WeChat QR Code" width={128} height={128} />
                 <p className="text-sm text-gray-500">
                   {t('payment.wechatQR')}
                 </p>

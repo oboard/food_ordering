@@ -6,19 +6,27 @@ import { useLanguage } from '@/contexts/language-context';
 import { useCart } from '@/contexts/cart-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Home, 
-  Menu, 
-  ShoppingCart, 
-  User, 
+import {
+  Home,
+  Menu,
+  ShoppingCart,
+  User,
   ClipboardList,
   Globe,
-  LogOut
+  LogOut,
+  LucideIcon
 } from 'lucide-react';
 import { useRouter, usePathname } from 'next/navigation';
 
 interface MobileLayoutProps {
   children: React.ReactNode;
+}
+
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: LucideIcon;
+  badge?: number;
 }
 
 export function MobileLayout({ children }: MobileLayoutProps) {
@@ -30,7 +38,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
 
   const cartItemCount = getItemCount();
 
-  const navigation = [
+  const navigation: NavigationItem[] = [
     { name: t('nav.home'), href: '/', icon: Home },
     { name: t('nav.menu'), href: '/menu', icon: Menu },
     { name: t('nav.cart'), href: '/cart', icon: ShoppingCart, badge: cartItemCount },
@@ -89,27 +97,26 @@ export function MobileLayout({ children }: MobileLayoutProps) {
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
-            
+
             return (
               <Button
                 key={item.name}
                 variant="ghost"
-                className={`flex flex-col items-center justify-center h-16 relative ${
-                  isActive 
-                    ? 'text-orange-600 bg-orange-50' 
+                className={`flex flex-col items-center justify-center h-16 relative ${isActive
+                    ? 'text-orange-600 bg-orange-50'
                     : 'text-gray-600 hover:text-gray-900'
-                }`}
+                  }`}
                 onClick={() => handleNavigation(item.href)}
               >
                 <div className="relative">
                   <Icon className="h-5 w-5 mb-1" />
-                  {item.badge && item.badge > 0 && (
-                    <div className="absolute -top-2 -right-2 h-4 w-4 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-red-500 rounded-full animate-pulse"></div>
-                      <span className="relative text-[10px] font-bold text-white">
-                        {item.badge > 99 ? '99+' : item.badge}
-                      </span>
-                    </div>
+                  {(item?.badge ?? 0) > 0 && (
+                    <Badge
+                      variant="destructive"
+                      className="absolute -top-2 -right-2 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold"
+                    >
+                      {item.badge > 99 ? '99+' : item.badge}
+                    </Badge>
                   )}
                 </div>
                 <span className="text-xs font-medium">{item.name}</span>
