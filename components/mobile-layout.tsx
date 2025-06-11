@@ -6,13 +6,13 @@ import { useLanguage } from '@/contexts/language-context';
 import { useCart } from '@/contexts/cart-context';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { motion, AnimatePresence } from 'motion/react';
 import {
   Home,
   Menu,
   ShoppingCart,
   User,
   ClipboardList,
-  Globe,
   LogOut,
   LucideIcon
 } from 'lucide-react';
@@ -88,7 +88,17 @@ export function MobileLayout({ children }: MobileLayoutProps) {
 
       {/* Main Content */}
       <main className="flex-1 pb-20">
-        {children}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.2 }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* Bottom Navigation */}
@@ -115,7 +125,7 @@ export function MobileLayout({ children }: MobileLayoutProps) {
                       variant="destructive"
                       className="absolute -top-2 -right-2 h-4 min-w-4 px-1 flex items-center justify-center text-[10px] font-bold"
                     >
-                      {item.badge > 99 ? '99+' : item.badge}
+                      {item.badge && item.badge > 99 ? '99+' : item.badge}
                     </Badge>
                   )}
                 </div>
