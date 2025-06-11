@@ -65,6 +65,10 @@ const translations = {
     'menu.allergens': 'Allergens',
     'menu.all': 'All',
     'menu.viewFullMenu': 'View Full Menu',
+    'menu.description': 'Description',
+    'menu.noImage': 'No Image Available',
+    'menu.preparationTime': 'Preparation Time',
+    'menu.quantity': 'Quantity',
     
     // Cart
     'cart.empty': 'Your cart is empty',
@@ -224,6 +228,10 @@ const translations = {
     'menu.allergens': '过敏原',
     'menu.all': '全部',
     'menu.viewFullMenu': '查看完整菜单',
+    'menu.description': '菜品描述',
+    'menu.noImage': '暂无图片',
+    'menu.preparationTime': '制作时间',
+    'menu.quantity': '数量',
     
     // Cart
     'cart.empty': '购物车为空',
